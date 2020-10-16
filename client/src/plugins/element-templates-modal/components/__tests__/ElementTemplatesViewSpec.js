@@ -110,15 +110,16 @@ describe('<ElementTemplatesView>', function() {
       const elementTemplate = DEFAULT_ELEMENT_TEMPLATES.find(({ name }) => name === 'Template 1');
 
       const { wrapper } = await createElementTemplatesModalView();
-
       wrapper.update();
+
+      const compTimeStr = toTimeStrg(new Date(timeStamp));
 
       // then
       const listItem = wrapper.findWhere(n => n.prop('elementTemplate') === elementTemplate).first();
 
       const meta = listItem.find('.element-templates-list__item-meta').first();
 
-      expect(meta.text()).to.equal('Walt\'s Catalog | 2001-09-09');
+      expect(meta.text()).to.equal(`Walt's Catalog | ${ compTimeStr }`);
     });
 
 
@@ -352,6 +353,8 @@ describe('<ElementTemplatesView>', function() {
 
 // helpers //////////
 
+const timeStamp = 1000000000000;
+
 const DEFAULT_ELEMENT_TEMPLATES = [
   {
     appliesTo: [
@@ -361,11 +364,11 @@ const DEFAULT_ELEMENT_TEMPLATES = [
     metadata: {
       catalogOrganizationId: '00000000-0000-0000-0000-000000000000',
       catalogTemplateId: '00000000-0000-0000-0000-000000000001',
-      created: 1000000000000,
+      created: timeStamp,
       tags: [
         'Donald\'s Catalog'
       ],
-      updated: 1000000000000
+      updated: timeStamp
     },
     name: 'Template 2',
     properties: []
@@ -378,11 +381,11 @@ const DEFAULT_ELEMENT_TEMPLATES = [
     metadata: {
       catalogOrganizationId: '00000000-0000-0000-0000-000000000000',
       catalogTemplateId: '00000000-0000-0000-0000-000000000002',
-      created: 1000000000000,
+      created: timeStamp,
       tags: [
         'Donald\'s Catalog'
       ],
-      updated: 1000000000000
+      updated: timeStamp
     },
     name: 'Template 3',
     properties: []
@@ -396,11 +399,11 @@ const DEFAULT_ELEMENT_TEMPLATES = [
     metadata: {
       catalogOrganizationId: '00000000-0000-0000-0000-000000000000',
       catalogTemplateId: '00000000-0000-0000-0000-000000000000',
-      created: 1000000000000,
+      created: timeStamp,
       tags: [
         'Walt\'s Catalog'
       ],
-      updated: 1000000000000
+      updated: timeStamp
     },
     name: 'Template 1',
     properties: []
@@ -459,4 +462,22 @@ class Config {
 
     throw Error('Unknown key');
   }
+}
+
+function toTimeStrg(time) {
+  const year = time.getFullYear();
+
+  const month = leftPad(String(time.getMonth() + 1), 2, '0');
+
+  const date = leftPad(String(time.getDate()), 2, '0');
+
+  return `${ year }-${ month }-${ date }`;
+}
+
+function leftPad(string, length, character) {
+  while (string.length < length) {
+    string = `${ character }${ string }`;
+  }
+
+  return string;
 }
